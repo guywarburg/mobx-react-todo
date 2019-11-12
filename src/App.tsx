@@ -1,26 +1,38 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import { TodoListStore } from "./stores/TodoListStore";
+import "./App.css";
+import { AddTodo } from "./components/AddTodo";
+import { TodoList } from "./components/TodoList";
+import { TodosFooter } from "./components/TodosFooter";
+import { observer } from "mobx-react";
 
-const App: React.FC = () => {
+const store = new TodoListStore();
+const App: React.FC = observer(() => {
+  const todos = store.getTodoList;
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+    <section className="todoapp">
+      <header className="header">
+        <h1>todos</h1>
+        <AddTodo createTodo={store.addTodo} />
       </header>
-    </div>
+      <section className="main">
+        <TodoList
+          todos={todos}
+          removeItem={store.removeItem}
+          toggleAll={store.toggleAll}
+        />
+      </section>
+      <footer className="footer">
+        <TodosFooter
+          remainingTodosString={store.getRemainingTodosString}
+          canClearCompleted={store.getCanClearCompleted}
+          onClearCompleted={store.onClearCompleted}
+          setFilter={store.setFilter}
+          currentFilter={store.currentFilter}
+        />
+      </footer>
+    </section>
   );
-}
+});
 
 export default App;
